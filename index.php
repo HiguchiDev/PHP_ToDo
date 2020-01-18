@@ -1,42 +1,47 @@
+<?php
+    require 'EnumFormName.php';
+    require 'DBAccessor.php';
+    require 'TaskViewer.php';
+    require 'FormChecker.php';
+?>
+
 <form action="index.php" method="post">
 <ul>
-    <li><span>タスク名</span><input type="text" name="name" value="<?php if(isset($name)){print($name);} ?>"></li>
-    <li><span>メモ</span><textarea name="memo"><?php if(isset($memo)){print($memo);} ?></textarea></li>
+    <li><span>タスク名</span><input type="text" name=<?php echo EnumFormName::NAME()->valueOf() ?> value="<?php if(isset($name)){print($name);} ?>"></li>
+    <li><span>メモ</span><textarea name=<?php echo EnumFormName::MEMO()->valueOf() ?>><?php if(isset($memo)){print($memo);} ?></textarea></li>
     <li><input type="submit" name="submit"></li>
 </ul>
 </form>
 <?php
     //phpinfo();
-    require 'DBAccessor.php';
-    require 'TaskViewer.php';
-
     $dsn = 'mysql:dbname=todolist;host=localhost;charset=utf8';
     $user = "root";
     $password = "";
 
-    $dbAccessor = new DBAccessor($dsn, $user, $password); 
-    $resultList = $dbAccessor->fetchAll();
-
-    $taskViewer = new TaskViewer();
-    $taskViewer->view($resultList);
-
     print('</dl>');
 
     if(isset($_POST['submit'])){
-    $name = $_POST['name'];
-        $memo = $_POST['memo'];
+        $formChecker = new FormChecker();
+        $errors = $formChecker->doCheck($_POST['submit']);
+
+        if(!empty($errors)){
+            echo '入力されていない項目があります';
+        }
+
+        $name = '';
+        $memo = '';
+
+        if (!empty($_POST[EnumFormName::NAME()->valueOf()])) {
+            $name = $_POST[EnumFormName::NAME()->valueOf()];
+        }
+
+        if (!empty($_POST[EnumFormName::MEMO()->valueOf()])) {
+            $memo = $_POST[EnumFormName::MEMO()->valueOf()];
+        }
+
         $errors = array();
         $name = htmlspecialchars($name, ENT_QUOTES);
         $memo = htmlspecialchars($memo, ENT_QUOTES);
-
-        if($name === ''){
-            $errors['name'] = 'お名前が入力されていません。';
-        }
-
-        if($memo === ''){
-            $errors['memo'] = 'メモが入力されていません。';
-        }
-        
         
         if(count($errors) === 0){
             
@@ -62,6 +67,12 @@
             unset($name, $memo);
         }
     }
+
+    $dbAccessor = new DBAccessor($dsn, $user, $password); 
+    $resultList = $dbAccessor->fetchAll();
+
+    $taskViewer = new TaskViewer();
+    $taskViewer->view($resultList);
 
     ?>
 </body>
