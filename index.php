@@ -1,8 +1,8 @@
 <?php
     require 'EnumFormName.php';
-    require 'DBAccessor.php';
     require 'TaskViewer.php';
     require 'FormChecker.php';
+    require 'TasksDBAccessor.php';
 ?>
 
 <form action="index.php" method="post">
@@ -14,9 +14,12 @@
 </form>
 <?php
     //phpinfo();
-    $dsn = 'mysql:dbname=todolist;host=localhost;charset=utf8';
+    $dbName = 'todolist';
+    $tablename = 'tasks';
     $user = "root";
     $password = "";
+
+    $dbAccessor = new TasksDBAccessor($dbName, $tablename, $user, $password); 
 
     print('</dl>');
 
@@ -39,36 +42,19 @@
             $memo = $_POST[EnumFormName::MEMO()->valueOf()];
         }
 
-        $errors = array();
         $name = htmlspecialchars($name, ENT_QUOTES);
         $memo = htmlspecialchars($memo, ENT_QUOTES);
         
         if(count($errors) === 0){
-            
-            $dsn = 'mysql:dbname=todolist;host=localhost;charset=utf8';
-            $user = 'root';
-            $password = '';
+            $entity = new TasksTableEntity();
+            $entity->name = $name;
+            $entity->memo = $memo;
 
-            $dbh = new PDO($dsn, $user, $password);
-            $dbh->query('SET NAMES utf8');
-            $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
-            $sql = 'INSERT INTO tasks (name, memo, done) VALUES (?, ?, 0)';
-            $stmt = $dbh->prepare($sql);
-
-            
-            $stmt->bindValue(1, $name, PDO::PARAM_STR);
-            $stmt->bindValue(2, $memo, PDO::PARAM_STR);
-
-            $stmt->execute();
-
-            $dbh = null;
-
-            unset($name, $memo);
+            $dbAccessor->insert($entity);
         }
     }
 
-    $dbAccessor = new DBAccessor($dsn, $user, $password); 
+
     $resultList = $dbAccessor->fetchAll();
 
     $taskViewer = new TaskViewer();

@@ -32,4 +32,4 @@ abstract class Enum
     {
         return (string)$this->scalar;
     }
-}
+}   
