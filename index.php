@@ -1,36 +1,27 @@
 <?php
     require 'EnumFormName.php';
-    require 'TaskViewer.php';
     require 'FormChecker.php';
     require 'TasksDBAccessor.php';
+    require 'EnumInputType.php';
+    require 'WebPageViewer.php';
 ?>
 
-<form action="index.php" method="post">
-<ul>
-    <li><span>タスク名</span><input type="text" name=<?php echo EnumFormName::NAME()->valueOf() ?> value="<?php if(isset($name)){print($name);} ?>"></li>
-    <li><span>メモ</span><textarea name=<?php echo EnumFormName::MEMO()->valueOf() ?>><?php if(isset($memo)){print($memo);} ?></textarea></li>
-    <li><input type="submit" name="submit"></li>
-</ul>
-</form>
 <?php
-    //phpinfo();
+
+    $webPageViewer = new WebPageViewer();
+
+    $webPageViewer->defaultView();
+
     $dbName = 'todolist';
     $tablename = 'tasks';
-    $user = "root";
-    $password = "";
+    $user = 'root';
+    $password = '';
 
     $dbAccessor = new TasksDBAccessor($dbName, $tablename, $user, $password); 
 
     print('</dl>');
 
-    if(isset($_POST['submit'])){
-        $formChecker = new FormChecker();
-        $errors = $formChecker->doCheck($_POST['submit']);
-
-        if(!empty($errors)){
-            echo '入力されていない項目があります';
-        }
-
+    if(isset($_POST[EnumInputType::SUBMIT()->valueOf()])){
         $name = '';
         $memo = '';
 
@@ -45,21 +36,25 @@
         $name = htmlspecialchars($name, ENT_QUOTES);
         $memo = htmlspecialchars($memo, ENT_QUOTES);
         
-        if(count($errors) === 0){
+        $formChecker = new FormChecker();
+        if(empty($formChecker->doCheck($_POST[EnumInputType::SUBMIT()->valueOf()]))){
             $entity = new TasksTableEntity();
             $entity->name = $name;
             $entity->memo = $memo;
 
             $dbAccessor->insert($entity);
+
+            header('Location: ./');
+            exit;
+        }
+        else{
+            echo '入力されていない項目があります';
         }
     }
 
-
     $resultList = $dbAccessor->fetchAll();
+    $webPageViewer->taskView($resultList);
 
-    $taskViewer = new TaskViewer();
-    $taskViewer->view($resultList);
-
-    ?>
+?>
 </body>
 </html>

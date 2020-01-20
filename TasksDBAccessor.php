@@ -1,7 +1,7 @@
 <?php
 
-require 'TasksTableEntity.php';
-require './DBAccessor.php';
+require_once 'TasksTableEntity.php';
+require_once 'DBAccessor.php';
 
 class TasksDBAccessor extends DBAccessor{
 
