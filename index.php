@@ -1,9 +1,9 @@
 <?php
-    require 'EnumFormName.php';
-    require 'FormChecker.php';
-    require 'TasksDBAccessor.php';
-    require 'EnumInputType.php';
-    require 'WebPageViewer.php';
+    require_once 'EnumFormName.php';
+    require_once 'FormChecker.php';
+    require_once 'TasksDBAccessor.php';
+    require_once 'EnumInputType.php';
+    require_once 'WebPageViewer.php';
 ?>
 
 <?php
@@ -20,6 +20,11 @@
     $dbAccessor = new TasksDBAccessor($dbName, $tablename, $user, $password); 
 
     print('</dl>');
+
+    if(isset($_POST[EnumInputType::DELETE_TASK()->valueOf()])){
+        var_dump($_POST[EnumInputType::DELETE_TASK()->valueOf()]);
+
+    }
 
     if(isset($_POST[EnumInputType::SUBMIT()->valueOf()])){
         $name = '';
