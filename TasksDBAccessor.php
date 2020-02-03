@@ -17,4 +17,39 @@ class TasksDBAccessor extends DBAccessor{
         unset($entity->name, $entity->memo);
     }
 
+    public function delete($ids){
+
+
+        $deleteId = '(';
+
+        if(is_array($ids)){
+            for($i = 0; $i < count($ids); $i++){
+                if($i === count($ids) - 1){
+                    $deleteId .= '?)';
+                }
+                else{
+                    $deleteId .= '?, ';
+                }
+                
+            }
+        }
+
+        $sql = 'DELETE FROM ' . $this->tableName . ' WHERE id in ' . $deleteId;
+        $stmt = $this->dbh->prepare($sql);
+
+
+        //var_dump($sql);
+
+        for($i = 0; $i < count($ids); $i++){
+            //var_dump($ids[$i]);
+            $stmt->bindValue($i + 1, $ids[$i], PDO::PARAM_INT);
+            
+        }
+        
+
+
+        $stmt->execute();
+
+    }
+
 }

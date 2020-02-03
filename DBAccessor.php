@@ -25,4 +25,6 @@ abstract class DBAccessor{
     }
 
     abstract public function insert($param);
+
+    abstract public function delete($entity);
 }

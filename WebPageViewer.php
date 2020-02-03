@@ -30,15 +30,6 @@ class WebPageViewer{
                 </dd>
 
 <?php
-
-            /*    print '';
-                print $value["name"];
-                print '</dt>';
-
-                print '<dd>';
-                print $value["memo"];
-                print '</dd>';
-            */
             }
 ?>
 

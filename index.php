@@ -21,8 +21,10 @@
 
     print('</dl>');
 
-    if(isset($_POST[EnumInputType::DELETE_TASK()->valueOf()])){
-        var_dump($_POST[EnumInputType::DELETE_TASK()->valueOf()]);
+    if(isset($_POST[EnumInputType::DELETE_TASK()->valueOf()]) && is_array($_POST[EnumInputType::DELETE_TASK()->valueOf()])){
+        $ids = $_POST[EnumInputType::DELETE_TASK()->valueOf()];
+
+        $dbAccessor->delete($ids);
 
     }
 
