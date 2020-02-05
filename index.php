@@ -19,8 +19,6 @@
 
     $dbAccessor = new TasksDBAccessor($dbName, $tablename, $user, $password); 
 
-    print('</dl>');
-
     if(isset($_POST[EnumInputType::DELETE_TASK()->valueOf()]) && is_array($_POST[EnumInputType::DELETE_TASK()->valueOf()])){
         $ids = $_POST[EnumInputType::DELETE_TASK()->valueOf()];
 
