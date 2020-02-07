@@ -3,25 +3,12 @@
     require_once 'FormChecker.php';
     require_once 'TasksDBAccessor.php';
     require_once 'EnumInputType.php';
-    require_once 'WebPageViewer.php';
-?>
+    require_once 'ToDoListViewer.php';
 
-<?php
-
-    $webPageViewer = new WebPageViewer();
-
-    $webPageViewer->defaultView();
-
-    $dbName = 'todolist';
-    $tablename = 'tasks';
-    $user = 'root';
-    $password = '';
-
-    $dbAccessor = new TasksDBAccessor($dbName, $tablename, $user, $password); 
+    $dbAccessor = new TasksDBAccessor(); 
 
     if(isset($_POST[EnumInputType::DELETE_TASK()->valueOf()]) && is_array($_POST[EnumInputType::DELETE_TASK()->valueOf()])){
         $ids = $_POST[EnumInputType::DELETE_TASK()->valueOf()];
-
         $dbAccessor->delete($ids);
 
     }
@@ -58,7 +45,9 @@
     }
 
     $resultList = $dbAccessor->fetchAll();
-    $webPageViewer->taskView($resultList);
+    
+    $ToDoListViewer = new ToDoListViewer();
+    $ToDoListViewer->view($resultList);
 
 ?>
 </body>

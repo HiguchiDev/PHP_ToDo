@@ -5,6 +5,15 @@ require_once 'DBAccessor.php';
 
 class TasksDBAccessor extends DBAccessor{
 
+    function __construct()	{
+        $this->dbName = 'todolist';
+        $this->tableName = 'tasks';
+        $this->user = 'root';
+        $this->password = '';
+
+        parent::__construct();
+    }
+
     function insert($entity){
         $sql = 'INSERT INTO ' . $this->tableName . ' (name, memo, done) VALUES (?, ?, 0)';
         $stmt = $this->dbh->prepare($sql);

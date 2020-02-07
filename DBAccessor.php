@@ -5,15 +5,15 @@ abstract class DBAccessor{
     protected $dbh;
     protected $dbName;
     protected $tableName;
+    protected $user;
+    protected $password;
 
-    function __construct($dbName, $tableName, $user, $password)	{
-        $dsn = 'mysql:dbname=' . $dbName . ';host=localhost;charset=utf8';
+    function __construct()	{
+        $dsn = 'mysql:dbname=' . $this->dbName . ';host=localhost;charset=utf8';
 
-        $this->dbh = new PDO($dsn, $user, $password);
+        $this->dbh = new PDO($dsn, $this->user, $this->password);
         $this->dbh->query('SET NAMES utf8');
         $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
-        $this->tableName = $tableName;
     }
 
     public function fetchAll(){
