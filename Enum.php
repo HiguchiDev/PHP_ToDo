@@ -21,8 +21,6 @@ abstract class Enum
         return new $class($const);
     }
 
-    //元の値を取り出すメソッド。
-    //メソッド名は好みのものに変更どうぞ
     final public function valueOf()
     {
         return $this->scalar;
@@ -32,4 +30,4 @@ abstract class Enum
     {
         return (string)$this->scalar;
     }
-}   
+}

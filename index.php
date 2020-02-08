@@ -5,49 +5,36 @@
     require_once 'EnumInputType.php';
     require_once 'ToDoListViewer.php';
 
-    $dbAccessor = new TasksDBAccessor(); 
+    $dbAccessor = new TasksDBAccessor();
+    $errorMessage = null;
 
-    if(isset($_POST[EnumInputType::DELETE_TASK()->valueOf()]) && is_array($_POST[EnumInputType::DELETE_TASK()->valueOf()])){
+    if (isset($_POST[EnumInputType::DELETE_TASK()->valueOf()]) && is_array($_POST[EnumInputType::DELETE_TASK()->valueOf()])) {
         $ids = $_POST[EnumInputType::DELETE_TASK()->valueOf()];
         $dbAccessor->delete($ids);
 
-    }
-
-    if(isset($_POST[EnumInputType::SUBMIT()->valueOf()])){
-        $name = '';
-        $memo = '';
-
-        if (!empty($_POST[EnumFormName::NAME()->valueOf()])) {
-            $name = $_POST[EnumFormName::NAME()->valueOf()];
-        }
-
-        if (!empty($_POST[EnumFormName::MEMO()->valueOf()])) {
-            $memo = $_POST[EnumFormName::MEMO()->valueOf()];
-        }
-
-        $name = htmlspecialchars($name, ENT_QUOTES);
-        $memo = htmlspecialchars($memo, ENT_QUOTES);
-        
+    } else if (isset($_POST[EnumInputType::SUBMIT()->valueOf()])) {
         $formChecker = new FormChecker();
-        if(empty($formChecker->doCheck($_POST[EnumInputType::SUBMIT()->valueOf()]))){
+        if (!$formChecker->isFormEmpty($_POST[EnumInputType::SUBMIT()->valueOf()])) {
             $entity = new TasksTableEntity();
-            $entity->name = $name;
-            $entity->memo = $memo;
+            $entity->name = $_POST[EnumFormName::NAME()->valueOf()];
+            $entity->memo = $_POST[EnumFormName::MEMO()->valueOf()];
+
+            htmlspecialchars($entity->name, ENT_QUOTES);
+            htmlspecialchars($entity->memo, ENT_QUOTES);
 
             $dbAccessor->insert($entity);
 
             header('Location: ./');
             exit;
-        }
-        else{
-            echo '入力されていない項目があります';
+        } else {
+            $errorMessage = '入力されていない項目があります';
         }
     }
 
-    $resultList = $dbAccessor->fetchAll();
+    $taskList = $dbAccessor->fetchAll();
     
     $ToDoListViewer = new ToDoListViewer();
-    $ToDoListViewer->view($resultList);
+    $ToDoListViewer->view($taskList, $errorMessage);
 
 ?>
 </body>

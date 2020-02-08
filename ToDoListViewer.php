@@ -13,7 +13,7 @@ class ToDoListViewer{
         </dd>
 <?php
     }
-    public function view($contents){
+    public function view($contents, $errorMessage){
 ?>
         <form action='index.php' method='post'>
         <ul>
@@ -23,6 +23,11 @@ class ToDoListViewer{
         </ul>
         </form>
 
+<?php
+        if(!is_null($errorMessage)){
+            echo $errorMessage;  
+        }
+?>
         <form action="index.php" method="post"><br>
 <?php
         if(is_array($contents)){
